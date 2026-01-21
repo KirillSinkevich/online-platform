@@ -10,20 +10,9 @@ This repository demonstrates a production-ready Angular monorepo with:
 
 - **2 Applications**
 
-  - `shop` - Angular e-commerce application with product listings and detail views
-  - `api` - Backend API with Docker support serving product data
-
 - **6 Libraries**
 
-  - `@org/feature-products` - Product listing feature (Angular)
-  - `@org/feature-product-detail` - Product detail feature (Angular)
-  - `@org/data` - Data access layer for shop features
-  - `@org/shared-ui` - Shared UI components
-  - `@org/models` - Shared data models
-  - `@org/products` - API product service library
-
 - **E2E Testing**
-  - `shop-e2e` - Playwright tests for the shop application
 
 ## 🚀 Quick Start
 
@@ -35,12 +24,6 @@ cd <your-repository-name>
 # Install dependencies
 # (Note: You may need --legacy-peer-deps)
 npm install
-
-# Serve the Angular shop application (this will simultaneously serve the API backend)
-npx nx serve shop
-
-# ...or you can serve the API separately
-npx nx serve api
 
 # Build all projects
 npx nx run-many -t build
@@ -156,37 +139,12 @@ This feature helps maintain a healthy CI pipeline by automatically detecting and
 
 ## 📁 Project Structure
 
-```
-├── apps/
-│   ├── shop/           [scope:shop]    - Angular e-commerce app
-│   ├── shop-e2e/                       - E2E tests for shop
-│   └── api/            [scope:api]     - Backend API with Docker
-├── libs/
-│   ├── shop/
-│   │   ├── feature-products/        [scope:shop,type:feature] - Product listing
-│   │   ├── feature-product-detail/  [scope:shop,type:feature] - Product details
-│   │   ├── data/                    [scope:shop,type:data]    - Data access
-│   │   └── shared-ui/               [scope:shop,type:ui]      - UI components
-│   ├── api/
-│   │   └── products/    [scope:api]    - Product service
-│   └── shared/
-│       └── models/      [scope:shared,type:data] - Shared models
-├── nx.json             - Nx configuration
-├── tsconfig.json       - TypeScript configuration
-└── eslint.config.mjs   - ESLint with module boundary rules
-```
-
 ## 🏷️ Understanding Tags
 
 This repository uses tags to enforce module boundaries:
 
 | Project            | Tags                         | Can Import From              |
 | ------------------ | ---------------------------- | ---------------------------- |
-| `shop`             | `scope:shop`                 | `scope:shop`, `scope:shared` |
-| `api`              | `scope:api`                  | `scope:api`, `scope:shared`  |
-| `feature-products` | `scope:shop`, `type:feature` | `scope:shop`, `scope:shared` |
-| `data`             | `scope:shop`, `type:data`    | `scope:shared`               |
-| `models`           | `scope:shared`, `type:data`  | Nothing (base library)       |
 
 ## 📚 Useful Commands
 
@@ -197,11 +155,6 @@ npx nx list                                     # List installed plugins
 npx nx show project shop --web                 # View project details
 
 # Development
-npx nx serve shop                              # Serve Angular app
-npx nx serve api                               # Serve backend API
-npx nx build shop                              # Build Angular app
-npx nx test data                               # Test a specific library
-npx nx lint feature-products                   # Lint a specific library
 
 # Running multiple tasks
 npx nx run-many -t build                       # Build all projects
