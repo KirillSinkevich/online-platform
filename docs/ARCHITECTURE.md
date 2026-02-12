@@ -13,8 +13,6 @@
 - [Backend архитектура](#backend-architecture)
 - [Shared библиотеки](#shared-libraries)
 - [База данных](#database)
-- [WebSocket коммуникация](#websocket-communication)
-- [Видео интеграция](#video-integration)
 - [Деплой и инфраструктура](#deployment-infrastructure)
 
 ---
@@ -42,6 +40,7 @@ Language:        TypeScript 5.9.x
 Styling:         SCSS (стилизация через .scss)
 Build:           Angular Build (application)
 State:           RxJS + Angular Signals
+Validation:      Zod (shared schemas from libs/shared)
 Video SDK:       Agora Web SDK (планируется)
 WebSocket:       Socket.io Client (планируется)
 HTTP Client:     Angular HttpClient
@@ -56,13 +55,13 @@ E2E Tests:       Playwright
 ```text
 Framework:       Express.js 4.21.x
 Language:        TypeScript 5.9.x
-ORM:             Prisma (планируется)
+ORM:             Prisma (type-safe database access)
+Validation:      Zod (shared schemas from libs/shared)
 Database:        PostgreSQL (планируется)
 Cache:           Redis (опционально, планируется)
 WebSocket:       Socket.io (планируется)
 Auth:            JWT (планируется)
 Password:        bcrypt (планируется)
-Validation:      express-validator (планируется)
 File Upload:     multer (планируется)
 Testing:         Vitest + Supertest (планируется)
 ```
@@ -259,65 +258,72 @@ apps/web/src/app/
 ### Структура приложения (Backend)
 
 ```text
-apps/backend/src/app/
-├── modules/                       # Feature модули
-│   ├── auth/                     # Модуль аутентификации
-│   │   ├── auth.controller.ts    # HTTP endpoints
-│   │   ├── auth.service.ts       # Бизнес-логика
-│   │   ├── auth.dto.ts           # Data Transfer Objects
-│   │   └── auth.validation.ts    # Валидация
-│   │
-│   ├── users/                    # Модуль пользователей
-│   │   ├── users.controller.ts
-│   │   ├── users.service.ts
-│   │   ├── users.repository.ts   # Prisma queries
-│   │   └── users.dto.ts
-│   │
-│   ├── rooms/                    # Модуль комнат
-│   │   ├── rooms.controller.ts
-│   │   ├── rooms.service.ts
-│   │   ├── rooms.repository.ts
-│   │   └── rooms.dto.ts
-│   │
-│   ├── chat/                     # Модуль чата (WebSocket)
-│   │   ├── chat.gateway.ts       # Socket.io gateway
-│   │   ├── chat.service.ts
-│   │   └── chat.dto.ts
-│   │
-│   └── storage/                  # Модуль хранения файлов
-│       ├── storage.controller.ts
-│       ├── storage.service.ts
-│       └── storage.config.ts
+apps/backend/src/
+├── prisma/                        # Prisma ORM
+│   ├── schema.prisma             # Схема базы данных
+│   ├── migrations/               # Миграции (автогенерация)
+│   └── seed.ts                   # Тестовые данные
 │
-└── common/                        # Общие утилиты
-    ├── middleware/
-    │   ├── auth.middleware.ts    # JWT проверка
-    │   ├── logger.middleware.ts
-    │   └── rate-limit.middleware.ts
-    ├── decorators/
-    │   ├── current-user.decorator.ts
-    │   └── roles.decorator.ts
-    ├── guards/
-    │   └── roles.guard.ts
-    ├── filters/
-    │   └── http-exception.filter.ts
-    └── utils/
-        ├── bcrypt.util.ts
-        ├── jwt.util.ts
-        └── validation.util.ts
+└── app/
+    ├── modules/                   # Feature модули
+    │   ├── auth/                 # Модуль аутентификации
+    │   │   ├── auth.controller.ts    # HTTP endpoints + Zod валидация
+    │   │   └── auth.service.ts       # Бизнес-логика + Prisma queries
+    │   │
+    │   ├── users/                # Модуль пользователей
+    │   │   ├── users.controller.ts   # HTTP endpoints + Zod
+    │   │   └── users.service.ts      # Бизнес-логика + Prisma
+    │   │
+    │   ├── rooms/                # Модуль комнат
+    │   │   ├── rooms.controller.ts   # HTTP endpoints + Zod
+    │   │   └── rooms.service.ts      # Бизнес-логика + Prisma
+    │   │
+    │   ├── chat/                 # Модуль чата (WebSocket)
+    │   │   ├── chat.gateway.ts       # Socket.io gateway
+    │   │   └── chat.service.ts
+    │   │
+    │   └── storage/              # Модуль хранения файлов
+    │       ├── storage.controller.ts
+    │       └── storage.service.ts
+    │
+    └── common/                    # Общие утилиты
+        ├── prisma.service.ts     # PrismaClient singleton
+        ├── middleware/
+        │   ├── auth.middleware.ts        # JWT проверка
+        │   ├── zod-validation.middleware.ts  # Zod валидация wrapper
+        │   ├── logger.middleware.ts
+        │   └── rate-limit.middleware.ts
+        └── utils/
+            ├── bcrypt.util.ts
+            ├── jwt.util.ts
+            └── response.util.ts
+
+Примечание: Упрощенная 2-слойная архитектура
+- Controller: HTTP requests + Zod валидация (из @org/shared/schemas)
+- Service: бизнес-логика + Prisma queries (БД)
+- Zod schemas: libs/shared (используются на frontend И backend)
 ```
 
-### Архитектурные слои
+### Архитектурные слои (упрощенная версия)
 
 ```text
 ┌─────────────────────────────────────┐
-│  Controller Layer (HTTP/WebSocket)  │  ← REST API / Socket.io endpoints
+│  libs/shared (Zod schemas)           │  ← Shared валидация
+└─────────────────────────────────────┘
+         ↓                     ↓
+┌──────────────────┐  ┌──────────────────┐
+│    Frontend      │  │    Backend       │
+│    (Angular)     │  │   (Express)      │
+└──────────────────┘  └──────────────────┘
+                              ↓
+┌─────────────────────────────────────┐
+│  Controller Layer                    │  ← HTTP endpoints + Zod валидация
 ├─────────────────────────────────────┤
-│  Service Layer (Business Logic)     │  ← Бизнес-логика приложения
+│  Service Layer                       │  ← Бизнес-логика + Prisma queries
 ├─────────────────────────────────────┤
-│  Repository Layer (Data Access)     │  ← Prisma queries
+│  Prisma ORM                          │  ← Type-safe DB access
 ├─────────────────────────────────────┤
-│  Database (PostgreSQL)              │  ← Хранение данных
+│  Database (PostgreSQL)               │  ← Хранение данных
 └─────────────────────────────────────┘
 ```
 
@@ -329,33 +335,38 @@ apps/backend/src/app/
 
 ```text
 libs/shared/src/lib/
-├── interfaces/                    # TypeScript интерфейсы
-│   ├── user.interface.ts
-│   ├── room.interface.ts
-│   ├── message.interface.ts
-│   ├── auth.interface.ts
-│   └── index.ts
+├── schemas/                       # Zod schemas (используются на frontend И backend)
+│   ├── auth/
+│   │   ├── register.schema.ts    # RegisterSchema, типы
+│   │   ├── login.schema.ts       # LoginSchema, типы
+│   │   └── index.ts
+│   ├── rooms/
+│   │   ├── room.schema.ts        # RoomSchema, CreateRoomSchema
+│   │   └── index.ts
+│   ├── common/
+│   │   ├── pagination.schema.ts
+│   │   └── index.ts
+│   └── index.ts                  # Экспорт всех схем
 │
-├── types/                         # TypeScript типы
-│   ├── role.type.ts
-│   ├── room-status.type.ts
+├── types/                         # Дополнительные TypeScript типы
+│   ├── api-response.type.ts
 │   └── index.ts
 │
 ├── constants/                     # Константы
 │   ├── api-routes.constant.ts
 │   ├── socket-events.constant.ts
-│   ├── validation.constant.ts
+│   ├── validation.constant.ts    # Константы для Zod валидации
 │   └── index.ts
 │
-├── utils/                         # Утилиты
-│   ├── date.util.ts
-│   ├── string.util.ts
-│   └── index.ts
-│
-└── validators/                    # Валидаторы
-    ├── email.validator.ts
-    ├── password.validator.ts
+└── utils/                         # Утилиты
+    ├── date.util.ts
+    ├── string.util.ts
     └── index.ts
+
+Примечание:
+- Zod schemas в libs/shared используются ВЕЗДЕ (frontend + backend)
+- Prisma используется ТОЛЬКО на backend для БД
+- Типы автоматически выводятся из Zod: z.infer<typeof Schema>
 ```
 
 ## 💾 База данных (Prisma Schema) {#database}
@@ -518,10 +529,10 @@ nx e2e web-e2e               # Playwright
 # Lint
 nx run web:lint
 
-# Prisma (когда backend будет добавлен)
-# npx prisma migrate dev
-# npx prisma generate
-# npx prisma studio
+# Prisma (см. docs/PRISMA_USAGE.md)
+nx run backend:prisma:generate   # Генерация Prisma Client
+nx run backend:prisma:migrate    # Создать миграцию
+nx run backend:prisma:studio     # Открыть Prisma Studio GUI
 
 # Docker (планируется)
 # docker-compose up -d

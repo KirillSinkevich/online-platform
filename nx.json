@@ -99,15 +99,32 @@
     "@nx/angular:application": {
       "e2eTestRunner": "playwright",
       "linter": "eslint",
-      "style": "css",
+      "style": "scss",
       "unitTestRunner": "vitest-analog"
     },
     "@nx/angular:library": {
       "linter": "eslint",
+      "style": "scss",
       "unitTestRunner": "vitest-analog"
     },
     "@nx/angular:component": {
-      "style": "css"
+      "style": "scss",
+      "standalone": true,
+      "changeDetection": "OnPush",
+      "displayBlock": true,
+      "skipTests": false
+    },
+    "@nx/angular:directive": {
+      "standalone": true,
+      "skipTests": false
+    },
+    "@nx/angular:pipe": {
+      "standalone": true,
+      "skipTests": false
+    },
+    "@nx/angular:scam": {
+      "style": "scss",
+      "skipTests": false
     }
   },
   "nxCloudId": "697116519afa227b14a0d077"
