@@ -113,22 +113,31 @@
 ## 🔧 Команды разработки
 
 ```bash
+# Инфраструктура
+pnpm db:up                      # Поднять PostgreSQL
+pnpm db:down                    # Остановить контейнеры
+pnpm db:logs                    # Логи postgres
+pnpm db:studio                  # Открыть Prisma Studio GUI
+
+# Запуск
+pnpm dev                        # Всё сразу: db + backend + frontend
+pnpm backend                    # Только backend (:3000)
+pnpm frontend                   # Только frontend (:4200)
+
 # Frontend
-nx serve web                    # Запустить Angular app (:4200)
 nx test web                     # Unit тесты
 nx e2e web-e2e                  # E2E тесты
 nx lint web                     # Линтинг
 
-# Backend (когда будет создан)
-nx serve backend                # Запустить Express server (:3000)
+# Backend
 nx run backend:prisma:generate  # Сгенерировать Prisma Client
 nx run backend:prisma:migrate   # Создать миграцию
-nx run backend:prisma:studio    # Открыть Prisma Studio
 
 # Общие
 nx graph                        # Визуализация зависимостей
-nx affected:test                # Тестировать только измененное
-nx affected:build               # Собрать только измененное
+nx affected -t test             # Тестировать только изменённое
+nx affected -t build            # Собрать только изменённое
+nx run-many -t lint,test        # Lint + тесты по всем проектам
 ```
 
 ---
@@ -164,4 +173,4 @@ nx affected:build               # Собрать только измененно
 
 ---
 
-**Последнее обновление:** 2025-01-29
+**Последнее обновление:** 2026-03-27

@@ -3,7 +3,18 @@
   "version": "0.0.0",
   "license": "MIT",
   "packageManager": "pnpm@9.0.0",
-  "scripts": {},
+  "type": "module",
+  "scripts": {
+    "db:up": "docker compose -f docker-compose.dev.yml up -d",
+    "db:down": "docker compose -f docker-compose.dev.yml down",
+    "db:logs": "docker compose -f docker-compose.dev.yml logs -f postgres",
+    "db:studio": "cd apps/backend && npx prisma studio",
+
+    "backend": "nx serve backend",
+    "frontend": "nx serve web",
+
+    "dev": "pnpm db:up && nx run-many -t serve --projects backend,web --parallel"
+  },
   "private": true,
   "devDependencies": {
     "@eslint/js": "^9.8.0",

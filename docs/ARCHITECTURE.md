@@ -71,7 +71,7 @@ Testing:         Vitest + Supertest (планируется)
 ```text
 Monorepo:        Nx 22.3.x
 Package Manager: pnpm 9.0.x
-Containerization: Docker + Docker Compose (планируется)
+Containerization: Docker + Docker Compose
 CI/CD:           GitHub Actions
 Deployment:      Docker containers (планируется)
 Reverse Proxy:   nginx (планируется)
@@ -512,32 +512,41 @@ services:
 ## 🎯 Команды для разработки
 
 ```bash
-# Запуск
-nx serve web                 # Frontend :4200
-# nx serve backend           # Backend :3000 (планируется)
+# --- Инфраструктура (БД) ---
+pnpm db:up                   # Поднять PostgreSQL (docker compose)
+pnpm db:down                 # Остановить контейнеры
+pnpm db:logs                 # Логи postgres
+pnpm db:studio               # Открыть Prisma Studio GUI
 
-# Сборка
-nx run web:build             # production сборка
-nx run web:build:development
+# --- Запуск приложений ---
+pnpm dev                     # Всё сразу: db + backend + frontend (параллельно)
+pnpm backend                 # Только backend :3000
+pnpm frontend                # Только frontend :4200
 
-# Unit-тесты
-nx run web:test              # Vitest (Angular unit test)
+# --- Сборка ---
+nx run web:build             # Frontend production сборка
+nx run web:build:development # Frontend development сборка
+nx run backend:build         # Backend сборка
 
-# E2E тесты
-nx e2e web-e2e               # Playwright
+# --- Тесты ---
+nx run web:test              # Frontend unit-тесты (Vitest)
+nx run backend:test          # Backend unit-тесты (Jest)
+nx e2e web-e2e               # Frontend E2E (Playwright)
+nx e2e backend-e2e           # Backend E2E (Jest + Supertest)
 
-# Lint
+# --- Качество кода ---
 nx run web:lint
+nx run backend:lint
+nx run-many -t lint,test     # Lint + тесты по всем проектам
 
-# Prisma (см. docs/PRISMA_USAGE.md)
+# --- Nx affected (только изменённые проекты) ---
+nx affected -t build,test,lint
+
+# --- Prisma (см. docs/PRISMA_USAGE.md) ---
 nx run backend:prisma:generate   # Генерация Prisma Client
 nx run backend:prisma:migrate    # Создать миграцию
-nx run backend:prisma:studio     # Открыть Prisma Studio GUI
-
-# Docker (планируется)
-# docker-compose up -d
 ```
 
 ---
 
-**Последнее обновление:** 2025-01-29
+**Последнее обновление:** 2026-03-27
