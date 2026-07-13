@@ -1,0 +1,8 @@
+{
+  "extends": "./tsconfig.base.json",
+  "files": [],
+  "references": [
+    // { "path": "./apps/my-angular-app" },
+    // { "path": "./apps/my-express-api" }
+  ]
+}
