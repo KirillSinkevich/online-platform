@@ -3,6 +3,7 @@ packages:
   - 'packages/*'
 allowBuilds:
   '@parcel/watcher': true
+  '@prisma/engines': true
   '@swc/core': true
   core-js-pure: true
   esbuild: true
@@ -10,4 +11,5 @@ allowBuilds:
   lmdb: true
   msgpackr-extract: true
   nx: true
+  prisma: true
   unrs-resolver: true
