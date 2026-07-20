@@ -5,6 +5,26 @@
   "projectType": "application",
   "tags": [],
   "targets": {
+    "build": {
+      "executor": "@nx/js:swc",
+      "outputs": ["{options.outputPath}"],
+      "defaultConfiguration": "production",
+      "options": {
+        "outputPath": "dist/apps/backend",
+        "main": "apps/backend/src/main.ts",
+        "tsConfig": "apps/backend/tsconfig.app.json",
+        "assets": [],
+        "generatePackageJson": true
+      },
+      "configurations": {
+        "development": {
+          "minify": false
+        },
+        "production": {
+          "minify": true
+        }
+      }
+    },
     "prune-lockfile": {
       "dependsOn": ["build"],
       "cache": true,
@@ -37,7 +57,8 @@
       "dependsOn": ["build"],
       "options": {
         "buildTarget": "backend:build",
-        "runBuildTargetDependencies": false
+        "runBuildTargetDependencies": false,
+        "envFile": "apps/backend/envs/.env.development"
       },
       "configurations": {
         "development": {
@@ -48,9 +69,32 @@
         }
       }
     },
-    "test": {
+    "prisma-generate": {
+      "executor": "nx:run-commands",
       "options": {
-        "passWithNoTests": true
+        "command": "prisma generate",
+        "cwd": "apps/backend"
+      }
+    },
+    "prisma-studio": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "prisma studio",
+        "cwd": "apps/backend"
+      }
+    },
+    "prisma-migrate-dev": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "prisma migrate dev",
+        "cwd": "apps/backend"
+      }
+    },
+    "prisma-push": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "prisma db push",
+        "cwd": "apps/backend"
       }
     }
   }

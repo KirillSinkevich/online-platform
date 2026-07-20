@@ -2,14 +2,9 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "outDir": "../../dist/out-tsc",
-    "module": "commonjs",
-    "types": ["node", "express"],
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "types": ["node", "express"]
   },
-  "include": ["src/**/*.ts"],
-  "exclude": [
-    "jest.config.ts",
-    "jest.config.cts",
-    "src/**/*.spec.ts",
-    "src/**/*.test.ts",
-  ],
+  "include": ["src/**/*.ts"]
 }

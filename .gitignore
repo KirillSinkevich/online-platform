@@ -4,11 +4,13 @@
 dist
 tmp
 out-tsc
+apps/backend/generated/
+apps/backend/src/generated/
+apps/backend/envs/.env.development
 
 # dependencies
 node_modules
 .pnpm-store
-pnpm-lock.yaml
 
 # IDEs and editors
 /.idea
@@ -54,3 +56,8 @@ vite.config.*.timestamp*
 vitest.config.*.timestamp*
 
 __screenshots__/
+
+
+
+.nx/migrate-runs
+.nx/polygraph

@@ -1,0 +1,2 @@
+%:
+	$(MAKE) -C scripts $@

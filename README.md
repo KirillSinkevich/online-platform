@@ -138,6 +138,50 @@ This feature helps maintain a healthy CI pipeline by automatically detecting and
 
 [Learn more about self-healing CI →](https://nx.dev/ci/features/self-healing-ci)
 
+## 🗄️ Backend Development
+
+The backend (`apps/backend`) uses **Express**, **Prisma 7** (PostgreSQL), and **Zod**.
+
+### Environment Setup
+
+```bash
+# Create .env.development from template
+make setup-env
+
+# Or from scripts/ directly
+make -C scripts setup-env
+```
+
+Then fill in your variables in `apps/backend/envs/.env.development`.
+
+### Start PostgreSQL
+
+```bash
+docker compose -f docker-compose.dev.yml up -d
+```
+
+### Prisma Commands
+
+```bash
+# Generate Prisma Client (after schema changes)
+pnpm nx run backend:prisma-generate
+
+# Create a migration
+pnpm nx run backend:prisma-migrate-dev -- --name <migration_name>
+
+# Push schema to DB (without migration)
+pnpm nx run backend:prisma-push
+
+# Open Prisma Studio
+pnpm nx run backend:prisma-studio
+```
+
+### Run Backend
+
+```bash
+pnpm nx serve backend
+```
+
 ## 📁 Project Structure
 
 ## 🏷️ Understanding Tags
