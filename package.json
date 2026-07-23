@@ -30,6 +30,8 @@
     "angular-eslint": "^21.2.0",
     "eslint": "^9.8.0",
     "eslint-config-prettier": "^10.0.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^17.1.1",
     "nx": "23.0.2",
     "prettier": "~3.6.2",
     "react-refresh": "^0.10.0",
@@ -48,5 +50,21 @@
     "@angular/router": "~21.2.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0"
+  },
+  "scripts": {
+    "prepare": "husky",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "lint": "nx run-many -t lint",
+    "typecheck": "nx run-many -t typecheck"
+  },
+  "lint-staged": {
+    "*.{ts,js,mjs,cjs}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{json,css,scss,html,md}": [
+      "prettier --write"
+    ]
   }
 }

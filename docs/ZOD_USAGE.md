@@ -17,6 +17,7 @@
 ## 🎯 Введение
 
 **Zod** используется для:
+
 - ✅ Валидации форм (client-side validation)
 - ✅ Валидации responses от API
 - ✅ Type-safe форм с автоматическим выводом типов
@@ -71,17 +72,14 @@ import { Router } from '@angular/router';
 import { ZodError } from 'zod';
 
 // Import из shared library
-import {
-  LoginRequestSchema,
-  type LoginRequest,
-} from '@org/shared/schemas';
+import { LoginRequestSchema, type LoginRequest } from '@org/shared/schemas';
 
 @Component({
   selector: 'app-login',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.scss']
+  styleUrls: ['./login.component.scss'],
 })
 export class LoginComponent {
   form: FormGroup;
@@ -90,7 +88,7 @@ export class LoginComponent {
 
   constructor(
     private fb: FormBuilder,
-    private router: Router
+    private router: Router,
   ) {
     this.form = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
@@ -114,7 +112,6 @@ export class LoginComponent {
       // Отправка на backend
       // TODO: вызов API service
       console.log('Valid data:', loginData);
-
     } catch (err) {
       if (err instanceof ZodError) {
         // Показ первой ошибки валидации
@@ -156,7 +153,7 @@ export class LoginComponent {
       [class.error]="form.get('email')?.invalid && form.get('email')?.touched"
     />
     @if (getFieldError('email')) {
-      <span class="error-message">{{ getFieldError('email') }}</span>
+    <span class="error-message">{{ getFieldError('email') }}</span>
     }
   </div>
 
@@ -169,12 +166,12 @@ export class LoginComponent {
       [class.error]="form.get('password')?.invalid && form.get('password')?.touched"
     />
     @if (getFieldError('password')) {
-      <span class="error-message">{{ getFieldError('password') }}</span>
+    <span class="error-message">{{ getFieldError('password') }}</span>
     }
   </div>
 
   @if (error()) {
-    <div class="alert alert-error">{{ error() }}</div>
+  <div class="alert alert-error">{{ error() }}</div>
   }
 
   <button type="submit" [disabled]="loading()">
@@ -199,7 +196,7 @@ import { z, ZodSchema, ZodError } from 'zod';
 import { environment } from '../../../environments/environment';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ApiService {
   private baseUrl = environment.apiUrl || 'http://localhost:3000/api';
@@ -210,21 +207,21 @@ export class ApiService {
   get<T>(url: string, schema: ZodSchema<T>): Observable<T> {
     return this.http
       .get(`${this.baseUrl}${url}`)
-      .pipe(map(response => this.validate(response, schema)));
+      .pipe(map((response) => this.validate(response, schema)));
   }
 
   // POST с валидацией response
   post<T>(url: string, body: any, schema: ZodSchema<T>): Observable<T> {
     return this.http
       .post(`${this.baseUrl}${url}`, body)
-      .pipe(map(response => this.validate(response, schema)));
+      .pipe(map((response) => this.validate(response, schema)));
   }
 
   // PATCH с валидацией response
   patch<T>(url: string, body: any, schema: ZodSchema<T>): Observable<T> {
     return this.http
       .patch(`${this.baseUrl}${url}`, body)
-      .pipe(map(response => this.validate(response, schema)));
+      .pipe(map((response) => this.validate(response, schema)));
   }
 
   // DELETE
@@ -265,7 +262,7 @@ import {
 } from '@org/shared/schemas';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AuthService {
   constructor(private api: ApiService) {}
@@ -359,7 +356,10 @@ const NumberSchema = z.string().transform((str) => Number(str));
 
 // Пример
 const FormSchema = z.object({
-  date: z.string().datetime().transform((str) => new Date(str)),
+  date: z
+    .string()
+    .datetime()
+    .transform((str) => new Date(str)),
   age: z.string().transform(Number).pipe(z.number().min(18)),
 });
 ```
@@ -371,10 +371,9 @@ const PasswordSchema = z
   .string()
   .min(8, { message: 'Пароль должен содержать минимум 8 символов' })
   .max(72, { message: 'Пароль слишком длинный' })
-  .refine(
-    (val) => /[A-Z]/.test(val),
-    { message: 'Должна быть хотя бы одна заглавная буква' }
-  );
+  .refine((val) => /[A-Z]/.test(val), {
+    message: 'Должна быть хотя бы одна заглавная буква',
+  });
 ```
 
 ### 5. Использование .safeParse()

@@ -188,8 +188,8 @@ pnpm nx serve backend
 
 This repository uses tags to enforce module boundaries:
 
-| Project            | Tags                         | Can Import From              |
-| ------------------ | ---------------------------- | ---------------------------- |
+| Project | Tags | Can Import From |
+| ------- | ---- | --------------- |
 
 ## 📚 Useful Commands
 

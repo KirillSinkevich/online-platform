@@ -391,15 +391,15 @@ model User {
   name          String
   role          Role      @default(STUDENT)
   avatar        String?
-  
+
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
-  
+
   // Relations
   ownedRooms    Room[]    @relation("RoomOwner")
   roomMembers   RoomMember[]
   sentMessages  Message[]
-  
+
   @@map("users")
 }
 
@@ -413,17 +413,17 @@ model Room {
   startedAt     DateTime?
   endedAt       DateTime?
   maxParticipants Int       @default(10)
-  
+
   ownerId       String
   owner         User        @relation("RoomOwner", fields: [ownerId], references: [id])
-  
+
   createdAt     DateTime    @default(now())
   updatedAt     DateTime    @updatedAt
-  
+
   // Relations
   members       RoomMember[]
   messages      Message[]
-  
+
   @@map("rooms")
 }
 
@@ -434,10 +434,10 @@ model RoomMember {
   roomId      String
   joinedAt    DateTime  @default(now())
   leftAt      DateTime?
-  
+
   user        User      @relation(fields: [userId], references: [id])
   room        Room      @relation(fields: [roomId], references: [id])
-  
+
   @@unique([userId, roomId])
   @@map("room_members")
 }
@@ -448,15 +448,15 @@ model Message {
   content     String
   type        MessageType @default(TEXT)
   fileUrl     String?
-  
+
   userId      String
   user        User        @relation(fields: [userId], references: [id])
-  
+
   roomId      String
   room        Room        @relation(fields: [roomId], references: [id])
-  
+
   createdAt   DateTime    @default(now())
-  
+
   @@map("messages")
 }
 

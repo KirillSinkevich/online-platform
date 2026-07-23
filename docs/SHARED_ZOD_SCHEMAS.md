@@ -147,7 +147,10 @@ export const EmailSchema = z
 
 export const PasswordSchema = z
   .string()
-  .min(VALIDATION.PASSWORD.MIN, `Пароль должен содержать минимум ${VALIDATION.PASSWORD.MIN} символов`)
+  .min(
+    VALIDATION.PASSWORD.MIN,
+    `Пароль должен содержать минимум ${VALIDATION.PASSWORD.MIN} символов`,
+  )
   .max(VALIDATION.PASSWORD.MAX, 'Пароль слишком длинный')
   .regex(/[A-Z]/, 'Пароль должен содержать хотя бы одну заглавную букву')
   .regex(/[a-z]/, 'Пароль должен содержать хотя бы одну строчную букву')
@@ -186,25 +189,30 @@ export type Role = z.infer<typeof RoleSchema>;
 ```typescript
 // libs/shared/src/lib/schemas/auth/register.schema.ts
 import { z } from 'zod';
-import { EmailSchema, PasswordSchema, NameSchema, RoleSchema, UserPublicSchema } from './user.schema';
+import {
+  EmailSchema,
+  PasswordSchema,
+  NameSchema,
+  RoleSchema,
+  UserPublicSchema,
+} from './user.schema';
 
 // ============================================
 // Register Request/Response
 // ============================================
 
-export const RegisterRequestSchema = z.object({
-  email: EmailSchema,
-  password: PasswordSchema,
-  confirmPassword: z.string(),
-  name: NameSchema,
-  role: RoleSchema.default('STUDENT'),
-}).refine(
-  (data) => data.password === data.confirmPassword,
-  {
+export const RegisterRequestSchema = z
+  .object({
+    email: EmailSchema,
+    password: PasswordSchema,
+    confirmPassword: z.string(),
+    name: NameSchema,
+    role: RoleSchema.default('STUDENT'),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
     message: 'Пароли не совпадают',
     path: ['confirmPassword'],
-  }
-);
+  });
 
 export const RegisterResponseSchema = z.object({
   user: UserPublicSchema,
@@ -289,10 +297,12 @@ export const RoomSchema = z.object({
 
 export const RoomWithOwnerSchema = RoomSchema.extend({
   owner: UserPublicSchema,
-  _count: z.object({
-    members: z.number().int(),
-    messages: z.number().int(),
-  }).optional(),
+  _count: z
+    .object({
+      members: z.number().int(),
+      messages: z.number().int(),
+    })
+    .optional(),
 });
 
 // ============================================
@@ -337,8 +347,16 @@ export const CreateRoomResponseSchema = z.object({
 // ============================================
 
 export const UpdateRoomRequestSchema = z.object({
-  title: z.string().min(VALIDATION.ROOM_TITLE.MIN).max(VALIDATION.ROOM_TITLE.MAX).optional(),
-  description: z.string().max(VALIDATION.ROOM_DESCRIPTION.MAX).nullable().optional(),
+  title: z
+    .string()
+    .min(VALIDATION.ROOM_TITLE.MIN)
+    .max(VALIDATION.ROOM_TITLE.MAX)
+    .optional(),
+  description: z
+    .string()
+    .max(VALIDATION.ROOM_DESCRIPTION.MAX)
+    .nullable()
+    .optional(),
   scheduledAt: z.string().datetime().nullable().optional(),
   maxParticipants: z.number().int().min(2).max(100).optional(),
 });
@@ -371,7 +389,11 @@ import { z } from 'zod';
 
 export const PaginationQuerySchema = z.object({
   page: z.string().transform(Number).pipe(z.number().int().min(1)).default('1'),
-  limit: z.string().transform(Number).pipe(z.number().int().min(1).max(100)).default('10'),
+  limit: z
+    .string()
+    .transform(Number)
+    .pipe(z.number().int().min(1).max(100))
+    .default('10'),
 });
 
 export const PaginationMetaSchema = z.object({
@@ -418,7 +440,7 @@ import { ZodError } from 'zod';
 import {
   LoginRequestSchema,
   LoginRequest,
-  type LoginResponse
+  type LoginResponse,
 } from '@org/shared/schemas';
 
 import { AuthService } from '../../services/auth.service';
@@ -437,7 +459,7 @@ export class LoginComponent {
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
   ) {
     this.form = this.fb.group({
       email: [''],
@@ -495,7 +517,7 @@ import {
 } from '@org/shared/schemas';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AuthService {
   private apiUrl = 'http://localhost:3000/api';
@@ -504,14 +526,14 @@ export class AuthService {
 
   login(data: LoginRequest): Observable<LoginResponse> {
     return this.http.post(`${this.apiUrl}/auth/login`, data).pipe(
-      map(response => LoginResponseSchema.parse(response)) // Валидация response
+      map((response) => LoginResponseSchema.parse(response)), // Валидация response
     );
   }
 
   register(data: RegisterRequest): Observable<RegisterResponse> {
-    return this.http.post(`${this.apiUrl}/auth/register`, data).pipe(
-      map(response => RegisterResponseSchema.parse(response))
-    );
+    return this.http
+      .post(`${this.apiUrl}/auth/register`, data)
+      .pipe(map((response) => RegisterResponseSchema.parse(response)));
   }
 }
 ```
@@ -531,7 +553,7 @@ export type ValidationTarget = 'body' | 'query' | 'params';
 
 export const validateRequest = (
   schema: ZodSchema,
-  target: ValidationTarget = 'body'
+  target: ValidationTarget = 'body',
 ) => {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -589,13 +611,13 @@ export class AuthController {
     this.router.post(
       '/register',
       validateRequest(RegisterRequestSchema, 'body'),
-      this.register.bind(this)
+      this.register.bind(this),
     );
 
     this.router.post(
       '/login',
       validateRequest(LoginRequestSchema, 'body'),
-      this.login.bind(this)
+      this.login.bind(this),
     );
   }
 
