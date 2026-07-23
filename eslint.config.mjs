@@ -1,4 +1,5 @@
 import nx from '@nx/eslint-plugin';
+import prettierConfig from 'eslint-config-prettier';
 
 export default [
   {
@@ -60,7 +61,12 @@ export default [
       '**/*.cjs',
       '**/*.mjs',
     ],
-    // Override or add rules here
-    rules: {},
+    rules: {
+      '@typescript-eslint/consistent-type-imports': [
+        'error',
+        { prefer: 'type-imports', fixStyle: 'inline-type-imports' },
+      ],
+    },
   },
+  prettierConfig,
 ];

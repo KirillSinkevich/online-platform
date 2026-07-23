@@ -23,6 +23,7 @@
     "@types/jsonwebtoken": "^9.0.7",
     "@types/node": "20.19.9",
     "esbuild": "^0.19.2",
+    "eslint": "^9.8.0",
     "jest": "^30.0.2",
     "jest-environment-node": "^30.0.2",
     "jest-util": "^30.0.2",

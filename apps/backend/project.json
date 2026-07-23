@@ -5,6 +5,12 @@
   "projectType": "application",
   "tags": [],
   "targets": {
+    "lint": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "eslint apps/backend"
+      }
+    },
     "prune-lockfile": {
       "dependsOn": ["build"],
       "cache": true,
@@ -51,6 +57,12 @@
     "test": {
       "options": {
         "passWithNoTests": true
+      }
+    },
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "tsc --noEmit -p apps/backend/tsconfig.app.json"
       }
     }
   }

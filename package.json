@@ -9,11 +9,23 @@
     "db:down": "docker compose -f docker-compose.dev.yml down",
     "db:logs": "docker compose -f docker-compose.dev.yml logs -f postgres",
     "db:studio": "cd apps/backend && npx prisma studio",
-
     "backend": "nx serve backend",
     "frontend": "nx serve web",
-
-    "dev": "pnpm db:up && nx run-many -t serve --projects backend,web --parallel"
+    "dev": "pnpm db:up && nx run-many -t serve --projects backend,web --parallel",
+    "prepare": "husky",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "lint": "nx run-many -t lint",
+    "typecheck": "nx run-many -t typecheck"
+  },
+  "lint-staged": {
+    "*.{ts,js,mjs,cjs}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{json,css,scss,html,md}": [
+      "prettier --write"
+    ]
   },
   "private": true,
   "devDependencies": {
@@ -42,8 +54,10 @@
     "eslint": "^9.8.0",
     "eslint-config-prettier": "^10.0.0",
     "eslint-plugin-playwright": "^1.6.2",
+    "husky": "^9.1.7",
     "jiti": "2.4.2",
     "jsonc-eslint-parser": "^2.1.0",
+    "lint-staged": "^17.2.0",
     "nx": "22.3.3",
     "prettier": "~3.6.2",
     "react-refresh": "^0.10.0",

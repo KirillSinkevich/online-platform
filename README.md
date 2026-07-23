@@ -144,8 +144,8 @@ This feature helps maintain a healthy CI pipeline by automatically detecting and
 
 This repository uses tags to enforce module boundaries:
 
-| Project            | Tags                         | Can Import From              |
-| ------------------ | ---------------------------- | ---------------------------- |
+| Project | Tags | Can Import From |
+| ------- | ---- | --------------- |
 
 ## 📚 Useful Commands
 
