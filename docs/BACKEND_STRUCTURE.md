@@ -23,6 +23,7 @@
 2. **Service Layer** — бизнес-логика + прямые Prisma queries
 
 **Преимущества:**
+
 - ✅ Простота и понятность
 - ✅ Быстрая разработка MVP
 - ✅ Меньше boilerplate кода
@@ -110,19 +111,23 @@ export class AuthController {
     this.router.post(
       '/register',
       validateRequest(RegisterRequestSchema, 'body'),
-      this.register.bind(this)
+      this.register.bind(this),
     );
 
     this.router.post(
       '/login',
       validateRequest(LoginRequestSchema, 'body'),
-      this.login.bind(this)
+      this.login.bind(this),
     );
 
     this.router.post('/logout', this.logout.bind(this));
   }
 
-  private register = async (req: Request, res: Response, next: NextFunction) => {
+  private register = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) => {
     try {
       // Тип уже валидирован middleware
       const data = req.body as RegisterRequest;
@@ -251,19 +256,15 @@ export class AuthService {
   }
 
   private generateAccessToken(userId: string): string {
-    return jwt.sign(
-      { userId },
-      process.env.JWT_ACCESS_SECRET || 'secret',
-      { expiresIn: '15m' }
-    );
+    return jwt.sign({ userId }, process.env.JWT_ACCESS_SECRET || 'secret', {
+      expiresIn: '15m',
+    });
   }
 
   private generateRefreshToken(userId: string): string {
-    return jwt.sign(
-      { userId },
-      process.env.JWT_REFRESH_SECRET || 'secret',
-      { expiresIn: '7d' }
-    );
+    return jwt.sign({ userId }, process.env.JWT_REFRESH_SECRET || 'secret', {
+      expiresIn: '7d',
+    });
   }
 }
 ```
@@ -273,6 +274,7 @@ export class AuthService {
 **Важно:** Валидация использует **Shared Zod Schemas** из `libs/shared/schemas`.
 
 Все схемы уже определены в shared library:
+
 - `RegisterRequestSchema`
 - `LoginRequestSchema`
 - `RegisterResponseSchema`
@@ -295,7 +297,7 @@ export type ValidationTarget = 'body' | 'query' | 'params';
 
 export const validateRequest = (
   schema: ZodSchema,
-  target: ValidationTarget = 'body'
+  target: ValidationTarget = 'body',
 ) => {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -341,9 +343,10 @@ class PrismaService {
   static getInstance(): PrismaClient {
     if (!PrismaService.instance) {
       PrismaService.instance = new PrismaClient({
-        log: process.env.NODE_ENV === 'development'
-          ? ['query', 'error', 'warn']
-          : ['error'],
+        log:
+          process.env.NODE_ENV === 'development'
+            ? ['query', 'error', 'warn']
+            : ['error'],
       });
 
       process.on('beforeExit', async () => {
@@ -508,10 +511,7 @@ export type UserPublic = Prisma.UserGetPayload<{
 const token = jwt.sign({ userId }, 'hardcoded-secret');
 
 // ✅ Хорошо
-const token = jwt.sign(
-  { userId },
-  process.env.JWT_SECRET || 'fallback-secret'
-);
+const token = jwt.sign({ userId }, process.env.JWT_SECRET || 'fallback-secret');
 ```
 
 ---
@@ -528,7 +528,7 @@ export const errorHandler = (
   error: Error,
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   console.error('Error:', error);
 

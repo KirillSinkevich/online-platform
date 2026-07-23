@@ -8,9 +8,7 @@
   "targets": {
     "build": {
       "executor": "@angular/build:application",
-      "outputs": [
-        "{options.outputPath}"
-      ],
+      "outputs": ["{options.outputPath}"],
       "defaultConfiguration": "production",
       "options": {
         "outputPath": "dist/apps/frontend",
@@ -23,9 +21,7 @@
             "input": "apps/frontend/public"
           }
         ],
-        "styles": [
-          "apps/frontend/src/styles.scss"
-        ]
+        "styles": ["apps/frontend/src/styles.scss"]
       },
       "configurations": {
         "production": {
@@ -70,6 +66,18 @@
         "buildTarget": "frontend:build",
         "staticFilePath": "dist/apps/frontend/browser",
         "spa": true
+      }
+    },
+    "lint": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "eslint apps/frontend"
+      }
+    },
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "tsc --noEmit -p apps/frontend/tsconfig.app.json"
       }
     }
   }

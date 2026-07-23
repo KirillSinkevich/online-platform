@@ -21,6 +21,7 @@
 ## 🎯 Введение
 
 **Prisma** используется на backend для:
+
 - ✅ Type-safe доступ к базе данных
 - ✅ Автоматическая генерация миграций
 - ✅ Управление схемой БД
@@ -230,9 +231,10 @@ class PrismaService {
   static getInstance(): PrismaClient {
     if (!PrismaService.instance) {
       PrismaService.instance = new PrismaClient({
-        log: process.env.NODE_ENV === 'development'
-          ? ['query', 'error', 'warn']
-          : ['error'],
+        log:
+          process.env.NODE_ENV === 'development'
+            ? ['query', 'error', 'warn']
+            : ['error'],
       });
 
       // Graceful shutdown
@@ -306,7 +308,7 @@ export class UsersService {
         createdAt: true,
         updatedAt: true,
         // НЕ включаем password в select!
-      }
+      },
     });
 
     return user;
@@ -330,7 +332,7 @@ export class UsersService {
         avatar: true,
         createdAt: true,
         // password НЕ включаем
-      }
+      },
     });
   }
 
@@ -358,7 +360,7 @@ export class UsersService {
         },
         orderBy: {
           createdAt: 'desc',
-        }
+        },
       }),
       prisma.user.count(),
     ]);
@@ -370,7 +372,7 @@ export class UsersService {
         limit,
         total,
         totalPages: Math.ceil(total / limit),
-      }
+      },
     };
   }
 }
@@ -394,7 +396,7 @@ export class UsersService {
         role: true,
         avatar: true,
         updatedAt: true,
-      }
+      },
     });
   }
 
@@ -427,7 +429,7 @@ export class UsersService {
       data: {
         // Можно добавить поле deletedAt в схему
         // deletedAt: new Date(),
-      }
+      },
     });
   }
 }
@@ -452,7 +454,7 @@ export class RoomsService {
             name: true,
             avatar: true,
             // password НЕ включаем
-          }
+          },
         },
         members: {
           include: {
@@ -461,17 +463,17 @@ export class RoomsService {
                 id: true,
                 name: true,
                 avatar: true,
-              }
-            }
-          }
+              },
+            },
+          },
         },
         _count: {
           select: {
             members: true,
             messages: true,
-          }
-        }
-      }
+          },
+        },
+      },
     });
   }
 }
@@ -481,12 +483,15 @@ export class RoomsService {
 
 ```typescript
 export class RoomsService {
-  async createRoom(ownerId: string, data: {
-    title: string;
-    description?: string;
-    scheduledAt?: Date;
-    maxParticipants?: number;
-  }) {
+  async createRoom(
+    ownerId: string,
+    data: {
+      title: string;
+      description?: string;
+      scheduledAt?: Date;
+      maxParticipants?: number;
+    },
+  ) {
     return await prisma.room.create({
       data: {
         title: data.title,
@@ -494,8 +499,8 @@ export class RoomsService {
         scheduledAt: data.scheduledAt,
         maxParticipants: data.maxParticipants ?? 10,
         owner: {
-          connect: { id: ownerId } // Связать с существующим User
-        }
+          connect: { id: ownerId }, // Связать с существующим User
+        },
       },
       include: {
         owner: {
@@ -503,9 +508,9 @@ export class RoomsService {
             id: true,
             name: true,
             avatar: true,
-          }
-        }
-      }
+          },
+        },
+      },
     });
   }
 
@@ -514,8 +519,8 @@ export class RoomsService {
     // Проверить, что пользователь еще не в комнате
     const existing = await prisma.roomMember.findUnique({
       where: {
-        userId_roomId: { userId, roomId }
-      }
+        userId_roomId: { userId, roomId },
+      },
     });
 
     if (existing) {
@@ -534,9 +539,9 @@ export class RoomsService {
             id: true,
             name: true,
             avatar: true,
-          }
-        }
-      }
+          },
+        },
+      },
     });
   }
 }
@@ -559,10 +564,14 @@ export class RoomsService {
       where: {
         status: filters.status,
         ownerId: filters.ownerId,
-        OR: filters.search ? [
-          { title: { contains: filters.search, mode: 'insensitive' } },
-          { description: { contains: filters.search, mode: 'insensitive' } },
-        ] : undefined,
+        OR: filters.search
+          ? [
+              { title: { contains: filters.search, mode: 'insensitive' } },
+              {
+                description: { contains: filters.search, mode: 'insensitive' },
+              },
+            ]
+          : undefined,
       },
       include: {
         owner: {
@@ -570,15 +579,15 @@ export class RoomsService {
             id: true,
             name: true,
             avatar: true,
-          }
+          },
         },
         _count: {
-          select: { members: true }
-        }
+          select: { members: true },
+        },
       },
       orderBy: {
         createdAt: 'desc',
-      }
+      },
     });
   }
 }
@@ -593,17 +602,17 @@ export class RoomsService {
     return await prisma.$transaction(async (tx) => {
       // 1. Удалить все сообщения
       await tx.message.deleteMany({
-        where: { roomId }
+        where: { roomId },
       });
 
       // 2. Удалить всех участников
       await tx.roomMember.deleteMany({
-        where: { roomId }
+        where: { roomId },
       });
 
       // 3. Удалить комнату
       await tx.room.delete({
-        where: { id: roomId }
+        where: { id: roomId },
       });
     });
   }
@@ -622,13 +631,13 @@ export class RoomsService {
       },
       _avg: {
         maxParticipants: true,
-      }
+      },
     });
   }
 
   async getUserRoomCount(userId: string) {
     return await prisma.room.count({
-      where: { ownerId: userId }
+      where: { ownerId: userId },
     });
   }
 }
@@ -671,7 +680,7 @@ const user = await prisma.user.findUnique({
     email: true,
     name: true,
     // password: false (не включаем)
-  }
+  },
 });
 ```
 
@@ -696,7 +705,7 @@ for (const room of rooms) {
 
 // ✅ Хорошо - 1 запрос
 const rooms = await prisma.room.findMany({
-  include: { owner: true }
+  include: { owner: true },
 });
 ```
 
@@ -813,11 +822,13 @@ main()
 ```
 
 Запуск seed:
+
 ```bash
 npx prisma db seed
 ```
 
 Добавьте в `package.json`:
+
 ```json
 {
   "prisma": {
