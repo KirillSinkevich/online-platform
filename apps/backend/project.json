@@ -6,13 +6,17 @@
   "tags": [],
   "targets": {
     "build": {
-      "executor": "@nx/js:swc",
+      "executor": "@nx/esbuild:esbuild",
       "outputs": ["{options.outputPath}"],
       "defaultConfiguration": "production",
       "options": {
         "outputPath": "dist/apps/backend",
         "main": "apps/backend/src/main.ts",
         "tsConfig": "apps/backend/tsconfig.app.json",
+        "platform": "node",
+        "format": ["esm"],
+        "bundle": true,
+        "thirdParty": false,
         "assets": [],
         "generatePackageJson": true
       },
@@ -58,7 +62,7 @@
       "options": {
         "buildTarget": "backend:build",
         "runBuildTargetDependencies": false,
-        "envFile": "apps/backend/envs/.env.development"
+        "runtimeArgs": ["--env-file=apps/backend/envs/.env.development"]
       },
       "configurations": {
         "development": {

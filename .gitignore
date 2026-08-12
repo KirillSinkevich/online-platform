@@ -4,8 +4,7 @@
 dist
 tmp
 out-tsc
-apps/backend/generated/
-apps/backend/src/generated/
+libs/database/src/generated/
 apps/backend/envs/.env.development
 
 # dependencies
