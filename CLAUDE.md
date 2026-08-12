@@ -20,5 +20,8 @@
 - DON'T USE for: basic generator syntax (`nx g @nx/react:app`), standard commands, things you already know
 - The `nx-generate` skill handles generator discovery internally - don't call nx_docs just to look up generator syntax
 
-
 <!-- nx configuration end-->
+
+## Task Planner
+
+При запросе "спланируй задачу", "составь план", "напиши spec" — используй инструкции из `.opencode/prompts/task-plan-instructions.md`. Создавай файл в `tasks/<kebab-case-name>.md`.
