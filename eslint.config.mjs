@@ -52,6 +52,19 @@ export default [
           fixStyle: 'inline-type-imports',
         },
       ],
+      // Префикс `_` помечает намеренно неиспользуемые аргументы и переменные.
+      // Нужен, например, для обработчиков ошибок Express: их четвёртый
+      // параметр обязателен (Express отличает error middleware по количеству
+      // аргументов), но в теле не используется.
+      '@typescript-eslint/no-unused-vars': [
+        'warn',
+        {
+          args: 'after-used',
+          argsIgnorePattern: '^_',
+          varsIgnorePattern: '^_',
+          caughtErrorsIgnorePattern: '^_',
+        },
+      ],
     },
   },
   {

@@ -30,9 +30,9 @@ app.use('/auth', authRouter);
 app.use(
   (
     err: unknown,
-    _: express.Request,
+    _req: express.Request,
     res: express.Response,
-    __: express.NextFunction,
+    _next: express.NextFunction,
   ) => {
     if (err instanceof HttpError) {
       res.status(err.statusCode).json({ message: err.message });

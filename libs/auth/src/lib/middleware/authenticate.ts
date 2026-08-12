@@ -10,7 +10,7 @@ declare module 'express-serve-static-core' {
 
 export function authenticate(
   req: Request,
-  _: Response,
+  _res: Response,
   next: NextFunction,
 ): void {
   const header = req.headers.authorization;
