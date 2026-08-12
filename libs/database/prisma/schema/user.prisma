@@ -1,0 +1,24 @@
+enum Role {
+    STUDENT
+    TEACHER
+    PARENT
+}
+
+model User {
+    id           String @id @default(uuid())
+    email        String @unique
+    passwordHash String
+    role         Role
+    firstName    String
+    lastName     String
+
+    teacherId String?
+    teacher   User?   @relation("TeacherStudent", fields: [teacherId], references: [id])
+    students  User[]  @relation("TeacherStudent")
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    invitesCreated InviteToken[] @relation("TeacherInvites")
+    refreshTokens RefreshToken[]
+}

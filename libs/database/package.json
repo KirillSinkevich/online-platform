@@ -1,0 +1,15 @@
+{
+  "name": "@online-platform/database",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@prisma/adapter-pg": "^7.9.1",
+    "@prisma/client": "^7.8.0"
+  },
+  "devDependencies": {
+    "argon2": "^0.45.1",
+    "prisma": "^7.8.0",
+    "tsx": "^4.23.12"
+  }
+}

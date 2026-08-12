@@ -1,0 +1,9 @@
+{
+  "name": "@online-platform/shared",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "devDependencies": {
+    "zod": "^4.4.3"
+  }
+}

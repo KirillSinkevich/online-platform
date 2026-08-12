@@ -1,0 +1,50 @@
+{
+  "name": "database",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/database/src",
+  "projectType": "library",
+  "tags": ["type:infra"],
+  "// targets": "to see all targets run: nx show project database --web",
+  "targets": {
+    "prisma-generate": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "prisma generate",
+        "cwd": "libs/database",
+        "envFile": "apps/backend/envs/.env.development"
+      }
+    },
+    "prisma-studio": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "prisma studio",
+        "cwd": "libs/database",
+        "envFile": "apps/backend/envs/.env.development"
+      }
+    },
+    "prisma-migrate-dev": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "prisma migrate dev",
+        "cwd": "libs/database",
+        "envFile": "apps/backend/envs/.env.development"
+      }
+    },
+    "prisma-push": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "prisma db push",
+        "cwd": "libs/database",
+        "envFile": "apps/backend/envs/.env.development"
+      }
+    },
+    "prisma-seed": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "tsx prisma/seed.ts",
+        "cwd": "libs/database",
+        "envFile": "apps/backend/envs/.env.development"
+      }
+    }
+  }
+}
