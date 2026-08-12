@@ -1,0 +1,17 @@
+{
+  "name": "@online-platform/auth",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@online-platform/database": "workspace:*",
+    "@online-platform/shared": "workspace:*",
+    "argon2": "^0.45.1",
+    "jsonwebtoken": "^9.0.3",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@types/jsonwebtoken": "^9.0.10",
+    "express": "^5.1.0"
+  }
+}
