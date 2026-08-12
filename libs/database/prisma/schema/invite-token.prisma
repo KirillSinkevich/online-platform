@@ -1,0 +1,12 @@
+model InviteToken {
+    id        Int    @id @default(autoincrement())
+    token     String @unique
+    teacherId String
+    teacher   User   @relation("TeacherInvites", fields: [teacherId], references: [id])
+
+    maxUses   Int       @default(1)
+    useCount  Int       @default(0)
+    expiresAt DateTime
+    createdAt DateTime  @default(now())
+    revokedAt DateTime?
+}

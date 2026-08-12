@@ -18,8 +18,29 @@ export default [
           allow: ['^.*/eslint(\\.base)?\\.config\\.[cm]?[jt]s$'],
           depConstraints: [
             {
-              sourceTag: '*',
-              onlyDependOnLibsWithTags: ['*'],
+              sourceTag: 'type:app',
+              onlyDependOnLibsWithTags: [
+                'type:app',
+                'type:domain',
+                'type:infra',
+                'type:shared',
+              ],
+            },
+            {
+              sourceTag: 'type:domain',
+              onlyDependOnLibsWithTags: [
+                'type:domain',
+                'type:infra',
+                'type:shared',
+              ],
+            },
+            {
+              sourceTag: 'type:infra',
+              onlyDependOnLibsWithTags: ['type:infra'],
+            },
+            {
+              sourceTag: 'type:shared',
+              onlyDependOnLibsWithTags: ['type:shared'],
             },
           ],
         },

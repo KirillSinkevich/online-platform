@@ -9,6 +9,11 @@
     "isolatedModules": true,
     "skipLibCheck": true,
     "emitDecoratorMetadata": true,
-    "experimentalDecorators": true
+    "experimentalDecorators": true,
+    "paths": {
+      "@online-platform/auth": ["./libs/auth/src/index.ts"],
+      "@online-platform/database": ["./libs/database/src/index.ts"],
+      "@online-platform/shared": ["./libs/shared/src/index.ts"]
+    }
   }
 }
